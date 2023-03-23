@@ -1,0 +1,54 @@
+$minWidth: 320px;
+$fontFamily: 'Montserrat', sans-serif;
+
+@import 'null';
+
+body {
+  font-size: 18px;
+  font-weight: 400;
+  color: #000;
+  background-color: rgb(225, 255, 253);
+}
+
+.app {
+	width: 400px;
+	margin: 0 auto;
+	margin-top: 200px;
+}
+
+.chat-title {
+	color: rgb(16, 60, 61);
+	margin-bottom: 15px;
+}
+
+.chat {
+	&__messages {
+		display: flex;
+		flex-direction: column;
+	}
+
+	&__message {
+		display: flex;
+		flex-direction: column;
+		padding: 15px;
+		background-color: #fff;
+		border: solid 1px rgb(16, 60, 61);
+		border-radius: 5px;
+
+		&:not(:last-child) {
+			margin-bottom: 15px;
+		}
+	}
+}
+
+.message-chat {
+	&__email {
+		margin-bottom: 20px;
+	}
+
+	&__subject {
+		margin-bottom: 15px;
+	}
+}
+
+

@@ -1,0 +1,1 @@
+![CI](https://github.com/NastyaKatyushkina/rxjs-1/actions/workflows/web.yml/badge.svg)
