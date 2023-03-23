@@ -1,34 +1,23 @@
-import Message from './components/Message';
 import { ajax } from 'rxjs/ajax';
-import { EMPTY, map, catchError, of, switchMap, interval, tap } from 'rxjs';
+import {
+  map, catchError, of, interval, switchMap, filter,
+} from 'rxjs';
+import Message from './Message';
 
-window.onload = () => {
-  const chat = document.getElementById('chat');
+const list = document.querySelector('.inbox__emails-list');
+const url = 'http://localhost:7070';
 
-  const intervalStream$ = interval(5000).pipe(
-    tap((v) => console.log(v)),
-    switchMap((v) => {
-      return ajax.getJSON('http://localhost:7070/messages/unread').pipe(
-        catchError((error) => {
-          console.log('error: ', error.message);
-          return EMPTY;
-        })
-      );
-    }),
-    map((response) => {
-      console.log(response);
-      return response.messages;
-    })
-  );
+const time = interval(3000);
 
-  intervalStream$.subscribe({
-    next: (messages) => {
-      if (Array.isArray(messages) && messages.length > 0) {
-        messages.forEach((message) => {
-          chat.prepend(new Message(message).render());
-        });
-      }
-    },
-    error: (err) => console.log('err', err),
+const obs$ = time.pipe(
+  switchMap(() => ajax(url).pipe(
+    map((userResponse) => userResponse.response),
+    filter((response) => response.status === 'ok'),
+    catchError(() => of({ messages: [] })),
+  )),
+);
+obs$.subscribe((response) => {
+  response.messages.forEach((message) => {
+    list.append(new Message(message).add());
   });
-};
+});
