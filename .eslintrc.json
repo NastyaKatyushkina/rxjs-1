@@ -1,19 +1,17 @@
 {
   "extends": "airbnb-base",
   "env": {
-    "es6": true,
-    "browser": true,
-    "jest": true
+     "es6": true,
+     "browser": true,
+     "jest": true
   },
   "rules": {
-    "no-restricted-syntax": ["error", "LabeledStatement", "WithStatement"],
-    "no-alert": "off",
-    "class-methods-use-this": "off",
-    "no-unused-expressions": [
+    "consistent-return": 0,
+    "no-restricted-syntax": [
       "error",
-      {
-        "allowTernary": true
-      }
-    ]
+      "LabeledStatement",
+      "WithStatement"
+    ],
+    "linebreak-style": 0
   }
 }

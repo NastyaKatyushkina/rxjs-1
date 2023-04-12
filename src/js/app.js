@@ -1,23 +1,36 @@
 import { ajax } from 'rxjs/ajax';
 import {
-  map, catchError, of, interval, switchMap, filter,
+  map, catchError, of, repeat,
 } from 'rxjs';
-import Message from './Message';
 
-const list = document.querySelector('.inbox__emails-list');
-const url = 'http://localhost:7070';
+const messagesTable = document.querySelector('#messages');
 
-const time = interval(3000);
-
-const obs$ = time.pipe(
-  switchMap(() => ajax(url).pipe(
-    map((userResponse) => userResponse.response),
-    filter((response) => response.status === 'ok'),
-    catchError(() => of({ messages: [] })),
-  )),
+const messages$ = ajax.getJSON('http://localhost:3000/messages/unread').pipe(
+  repeat({ delay: 2000 }),
+  map((response) => response.messages),
+  catchError((error) => of(error)),
 );
-obs$.subscribe((response) => {
-  response.messages.forEach((message) => {
-    list.append(new Message(message).add());
+
+function renderMessage(message) {
+  const row = document.createElement('tr');
+  const subject = message.subject.length > 15
+    ? `${message.subject.slice(0, 15)}...`
+    : message.subject;
+  const received = new Date(message.received).toLocaleString('ru-RU', {
+    hour: '2-digit',
+    minute: '2-digit',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
   });
+  row.innerHTML = `
+    <td>${message.from}</td>
+    <td>${subject}</td>
+    <td>${received}</td>
+  `;
+  return row;
+}
+
+messages$.subscribe((messages) => {
+  messages.map(renderMessage).forEach((row) => messagesTable.prepend(row));
 });
